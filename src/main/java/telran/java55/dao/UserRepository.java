@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import telran.java55.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer>{
+public interface UserRepository extends JpaRepository<User, Long>{
 	Optional<User> findByEmail(String email);
 
 }

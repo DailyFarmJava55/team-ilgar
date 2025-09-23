@@ -19,20 +19,21 @@ import lombok.ToString;
 public class Farmer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int id;
+	Long id;
 	@Column(unique = true, nullable = false)
 	String email;
 	@Column(nullable = false)
 	String password;
-	@Column(nullable = false)
+	@Column(name = "farm_name", nullable = false)
 	String farmName;
-	@Column(nullable = false)
+	@Column(nullable = true)
 	String username;
 	@Column(nullable = false)
 	String role;
-	@Embedded
-	Address address;
+	@Column(nullable = true)
+	String address;
 	@Embedded
 	Location location;
-	
+	@Column(nullable = true)
+	String phone;
 }

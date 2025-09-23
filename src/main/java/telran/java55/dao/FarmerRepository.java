@@ -8,4 +8,7 @@ import telran.java55.model.Farmer;
 
 public interface FarmerRepository extends JpaRepository<Farmer, Integer> {
 	Optional<Farmer> findByEmail(String email);
+	boolean existsByEmail(String email);
+	Optional<Farmer> findByUsername(String username);
+	
 }
