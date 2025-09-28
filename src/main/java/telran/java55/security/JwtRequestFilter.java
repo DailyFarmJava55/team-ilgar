@@ -28,9 +28,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserServiceImpl userService;
     private final JwtUtil jwtUtil;
-    // UserDetailsService для обычных пользователей
+    
     private final UserDetailsService userDetailsService;
-    // UserDetailsService для фермеров
+    
     private final FarmerDetailsServiceImpl farmerDetailsService;
 
     public JwtRequestFilter(
@@ -54,7 +54,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        // ПУБЛИЧНЫЕ маршруты — пропускаем без проверки токена
+       
         boolean isPublic =
                 "OPTIONS".equalsIgnoreCase(method)
                 || path.equals("/api/auth/user/login")
@@ -71,7 +71,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Остальные запросы — только с Bearer
+       
         String tokenHeader = request.getHeader("Authorization");
         if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -91,20 +91,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             final String email = jwtUtil.extractEmail(token);
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // Выбираем, из какого UserDetailsService грузить, по пути
+                
                 final UserDetails userDetails =
                         (path.startsWith("/api/surprisebags") || path.startsWith("/api/farmer"))
                                 ? farmerDetailsService.loadUserByUsername(email)
                                 : userDetailsService.loadUserByUsername(email);
 
-                // ВАЖНО: authorities внутри userDetails должны быть с префиксом ROLE_
+                
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
 
-            // Пробрасываем Principal как email (удобно для контроллеров)
+            
             HttpServletRequestWrapper wrappedRequest = new HttpServletRequestWrapper(request) {
                 @Override
                 public Principal getUserPrincipal() {

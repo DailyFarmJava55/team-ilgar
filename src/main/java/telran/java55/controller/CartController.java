@@ -19,15 +19,12 @@ import telran.java55.service.UserService;
 public class CartController {
 
     private final CartService cartService;
-    private final UserService userService; // нужен, чтобы получить id по email из токена
+    private final UserService userService;
 
-    // утилита: достаём id текущего юзера из Principal
     private Long currentUserId(Principal principal) {
         User u = userService.getUserByEmail(principal.getName());
         return u.getId();
     }
-
-    // ----- НОВЫЕ безопасные эндпоинты (без userId в URL/теле) -----
 
     @GetMapping
     public List<CartItem> getMyCart(Principal principal) {
@@ -56,18 +53,16 @@ public class CartController {
         return ResponseEntity.ok("Cart cleared");
     }
 
-    // ----- (опционально) СТАРЫЕ маршруты с userId можно временно оставить и игнорировать чужие id -----
-    // Лучше удалить после того, как фронт обновишь
 
     @Deprecated
     @GetMapping("/{userId}")
     public List<CartItem> getCartItemsDeprecated(@PathVariable Long userId, Principal principal) {
-        return getMyCart(principal); // игнорируем переданный userId
+        return getMyCart(principal); 
     }
 
     @Deprecated
     @DeleteMapping("/clear/{userId}")
     public ResponseEntity<?> clearCartDeprecated(@PathVariable Long userId, Principal principal) {
-        return clearMyCart(principal); // игнорируем переданный userId
+        return clearMyCart(principal); 
     }
 }
